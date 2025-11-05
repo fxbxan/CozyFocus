@@ -1,5 +1,5 @@
 import { ref, computed, onBeforeUnmount } from 'vue'
-import type { ITimerContext } from './useTimer.types'
+import { type ITimerContext, ETimerStatus } from './useTimer.types'
 
 export function useTimer(): ITimerContext {
   // if (!minutes || !seconds) console.error('useTimer is missing seconds argument!')
@@ -7,7 +7,7 @@ export function useTimer(): ITimerContext {
   const minutes = ref(0)
   const seconds = ref(0)
 
-  const isRunning = ref(false)
+  const status = ref<ETimerStatus>(ETimerStatus.STOP)
   const intervalMs = 1000
   const totalSecondsLeft = ref(0)
 
@@ -17,13 +17,12 @@ export function useTimer(): ITimerContext {
   let timerId: number
 
   const set = (m: number, s: number) => {
+    if (status.value == ETimerStatus.RUNNING) return
     minutes.value = m
     seconds.value = s
 
     lastSavedMinute = m
     lastSavedSecond = s
-
-    // totalSecondsLeft.value = m * 60 + s
   }
 
   const tick = () => {
@@ -41,8 +40,8 @@ export function useTimer(): ITimerContext {
   }
 
   const start = () => {
-    if (isRunning.value) return
-    isRunning.value = true
+    if (status.value == ETimerStatus.RUNNING) return
+    status.value = ETimerStatus.RUNNING
     timerId = setInterval(tick, intervalMs)
     tick()
   }
@@ -54,12 +53,12 @@ export function useTimer(): ITimerContext {
     const lastKnownMinute = minutes.value
     const lastKnownSecond = seconds.value
     set(lastKnownMinute, lastKnownSecond)
-    isRunning.value = false
+    status.value = ETimerStatus.STOP
   }
 
   const end = () => {
     clearInterval(timerId)
-    isRunning.value = false
+    status.value = ETimerStatus.FINISH
   }
 
   const reset = () => {
@@ -75,5 +74,5 @@ export function useTimer(): ITimerContext {
 
   onBeforeUnmount(end)
 
-  return { formattedTime, totalSecondsLeft, start, stop, reset, end, set, isRunning }
+  return { formattedTime, totalSecondsLeft, start, stop, reset, end, set, status }
 }

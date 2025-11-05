@@ -3,7 +3,7 @@ import type { ComputedRef, Ref } from 'vue'
 export interface ITimerContext {
   formattedTime: ComputedRef<string>
   totalSecondsLeft: Ref<number>
-  isRunning: Ref<boolean>
+  status: Ref<ETimerStatus>
   // mm: Ref<number>
   // ss: Ref<number>
   set: (minutes: number, seconds: number) => void
@@ -14,7 +14,8 @@ export interface ITimerContext {
   onFinish?: () => void
 }
 
-export interface ITime {
-  minutes: number
-  seconds: number
+export enum ETimerStatus {
+  RUNNING = 'Running',
+  STOP = 'Stopped',
+  FINISH = 'Finished',
 }
