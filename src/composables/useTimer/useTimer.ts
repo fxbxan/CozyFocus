@@ -2,8 +2,6 @@ import { ref, computed, onBeforeUnmount } from 'vue'
 import { type ITimerContext, ETimerStatus } from './useTimer.types'
 
 export function useTimer(): ITimerContext {
-  // if (!minutes || !seconds) console.error('useTimer is missing seconds argument!')
-
   const minutes = ref(0)
   const seconds = ref(0)
 
@@ -62,7 +60,7 @@ export function useTimer(): ITimerContext {
   }
 
   const reset = () => {
-    stop()
+    if (status.value == ETimerStatus.RUNNING) return
     set(lastSavedMinute, lastSavedSecond)
   }
 
@@ -71,8 +69,7 @@ export function useTimer(): ITimerContext {
     const formatted = `${minutes.value.toString().padStart(2, '0')}:${seconds.value.toString().padStart(2, '0')}`
     return formatted
   })
-
   onBeforeUnmount(end)
 
-  return { formattedTime, totalSecondsLeft, start, stop, reset, end, set, status }
+  return { formattedTime, totalSecondsLeft, start, stop, reset, end, set, status, minutes, seconds }
 }

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import Greeter from '../components/Greeter.vue'
-import Timer from '../components/Timer.vue'
+import TimerContainer from '../components/Timer/TimerContainer.vue'
 </script>
 
 <template>
@@ -8,7 +7,7 @@ import Timer from '../components/Timer.vue'
     <!-- <Greeter />  -->
   </section>
   <main>
-    <Timer />
+    <TimerContainer />
   </main>
 </template>
 
