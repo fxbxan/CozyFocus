@@ -14,8 +14,12 @@ export function useTimer(): ITimerContext {
 
   let timerId: number
 
+  // Made to prevent user from typing enormous numbers.
+  const isUnderMaxTime = computed(() => minutes.value > 99 || seconds.value > 60)
+
   const set = (m: number, s: number) => {
     if (status.value == ETimerStatus.RUNNING) return
+
     minutes.value = m
     seconds.value = s
 
@@ -38,7 +42,7 @@ export function useTimer(): ITimerContext {
   }
 
   const start = () => {
-    if (status.value == ETimerStatus.RUNNING) return
+    if (status.value == ETimerStatus.RUNNING || isUnderMaxTime.value) return
     status.value = ETimerStatus.RUNNING
     timerId = setInterval(tick, intervalMs)
     tick()
@@ -65,11 +69,23 @@ export function useTimer(): ITimerContext {
   }
 
   // format to 00:00
-  const formattedTime = computed(() => {
-    const formatted = `${minutes.value.toString().padStart(2, '0')}:${seconds.value.toString().padStart(2, '0')}`
-    return formatted
-  })
+  const formattedTime = computed(
+    () =>
+      `${minutes.value.toString().padStart(2, '0')}:${seconds.value.toString().padStart(2, '0')}`,
+  )
   onBeforeUnmount(end)
 
-  return { formattedTime, totalSecondsLeft, start, stop, reset, end, set, status, minutes, seconds }
+  return {
+    formattedTime,
+    totalSecondsLeft,
+    start,
+    stop,
+    reset,
+    end,
+    set,
+    status,
+    minutes,
+    seconds,
+    isUnderMaxTime,
+  }
 }
