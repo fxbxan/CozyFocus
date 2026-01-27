@@ -1,91 +1,61 @@
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, onBeforeUnmount, onMounted } from 'vue'
 import { type ITimerContext, ETimerStatus } from './useTimer.types'
 
 export function useTimer(): ITimerContext {
-  const minutes = ref(0)
-  const seconds = ref(0)
-
+  const seconds = ref(12)
   const status = ref<ETimerStatus>(ETimerStatus.STOP)
-  const intervalMs = 1000
-  const totalSecondsLeft = ref(0)
+  const timerIntervalId = ref<ReturnType<typeof setInterval> | null>(null)
 
-  let lastSavedMinute: number
-  let lastSavedSecond: number
+  // const set = (s: number) => {
+  //   if (status.value == ETimerStatus.RUNNING) return
 
-  let timerId: number
-
-  // Made to prevent user from typing enormous numbers.
-  const isUnderMaxTime = computed(() => minutes.value > 99 || seconds.value > 60)
-
-  const set = (m: number, s: number) => {
-    if (status.value == ETimerStatus.RUNNING) return
-
-    minutes.value = m
-    seconds.value = s
-
-    lastSavedMinute = m
-    lastSavedSecond = s
-  }
+  //   seconds.value = s
+  // }
 
   const tick = () => {
-    if (seconds.value == 0 && minutes.value == 0) {
+    if (seconds.value == 0) {
       end()
       return
     }
-
-    if (seconds.value == 0 && minutes.value > 0) {
-      seconds.value = 60
-      minutes.value -= 1
-    }
     seconds.value -= 1
-    console.log(minutes.value, seconds.value)
+
+    console.log(seconds.value)
   }
 
   const start = () => {
-    if (status.value == ETimerStatus.RUNNING || isUnderMaxTime.value) return
+    if (status.value == ETimerStatus.RUNNING) return
     status.value = ETimerStatus.RUNNING
-    timerId = setInterval(tick, intervalMs)
+    timerIntervalId.value = setInterval(tick, 1000)
     tick()
   }
 
   const stop = () => {
-    if (timerId === null) return
+    if (timerIntervalId.value === null) return
 
-    clearInterval(timerId)
-    const lastKnownMinute = minutes.value
-    const lastKnownSecond = seconds.value
-    set(lastKnownMinute, lastKnownSecond)
+    clearInterval(timerIntervalId.value)
     status.value = ETimerStatus.STOP
   }
 
   const end = () => {
-    clearInterval(timerId)
+    if (typeof timerIntervalId.value === 'number') clearInterval(timerIntervalId.value)
     status.value = ETimerStatus.FINISH
   }
 
-  const reset = () => {
-    if (status.value == ETimerStatus.RUNNING) return
-    set(lastSavedMinute, lastSavedSecond)
-  }
+  // const reset = () => {
+  //   if (status.value == ETimerStatus.RUNNING) return
+  // }
 
-  // format to 00:00
-  const formattedTime = computed(
-    () =>
-      `${minutes.value.toString().padStart(2, '0')}:${seconds.value.toString().padStart(2, '0')}`,
-  )
+  onMounted(start)
   onBeforeUnmount(end)
 
   return {
-    formattedTime,
-    totalSecondsLeft,
     start,
     stop,
-    reset,
+    // reset,
     end,
-    set,
+    // set,
     status,
-    minutes,
     seconds,
-    isUnderMaxTime,
+    // timerIntervalId,
   }
 }
