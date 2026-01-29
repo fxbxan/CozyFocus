@@ -1,36 +1,32 @@
-import { ref, onBeforeUnmount, onMounted } from 'vue'
+import { ref, watch, watchEffect } from 'vue'
 import { type ITimerContext, ETimerStatus } from './useTimer.types'
-
+import { INTERVAL_MS } from './useTimer.consts'
+//!TODO Interval is not recommended since it can cause time drift, need other implementation
+//!TODO Learn more about use toValue()
 export function useTimer(): ITimerContext {
-  const seconds = ref(12)
+  const seconds = ref(0)
   const status = ref<ETimerStatus>(ETimerStatus.STOP)
   const timerIntervalId = ref<ReturnType<typeof setInterval> | null>(null)
 
-  // const set = (s: number) => {
-  //   if (status.value == ETimerStatus.RUNNING) return
+  const set = (s: number) => {
+    if (status.value === ETimerStatus.RUNNING) return
 
-  //   seconds.value = s
-  // }
+    seconds.value = s
+  }
 
   const tick = () => {
-    if (seconds.value == 0) {
-      end()
-      return
-    }
     seconds.value -= 1
-
-    console.log(seconds.value)
   }
 
   const start = () => {
-    if (status.value == ETimerStatus.RUNNING) return
+    if (status.value === ETimerStatus.RUNNING || seconds.value === 0) return
     status.value = ETimerStatus.RUNNING
-    timerIntervalId.value = setInterval(tick, 1000)
-    tick()
+
+    timerIntervalId.value = setInterval(tick, INTERVAL_MS)
   }
 
   const stop = () => {
-    if (timerIntervalId.value === null) return
+    if (!timerIntervalId.value) return
 
     clearInterval(timerIntervalId.value)
     status.value = ETimerStatus.STOP
@@ -45,17 +41,18 @@ export function useTimer(): ITimerContext {
   //   if (status.value == ETimerStatus.RUNNING) return
   // }
 
-  onMounted(start)
-  onBeforeUnmount(end)
+  watch(seconds, (val) => {
+    if (val === 0) end()
+  })
+
+  watchEffect(() => console.log(seconds.value))
 
   return {
     start,
     stop,
-    // reset,
     end,
-    // set,
+    set,
     status,
     seconds,
-    // timerIntervalId,
   }
 }

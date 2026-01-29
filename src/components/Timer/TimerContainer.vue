@@ -1,28 +1,13 @@
 <template>
   <div class="wrapper">
-    <div class="circle">Time: {{ formattedTime }}</div>
-    {{ isUnderMaxTime }}
-    <p>Status: {{ status }}</p>
-    <TimerDisplay v-model:minutes="minutes" v-model:seconds="seconds" :status="status" />
-    <TimerActions @onStart="handleStart" @onResume="handleResume" @onStop="stop" @onReset="reset" />
+    <!-- <div class="circle">totalSeconds: {{ seconds }}</div> -->
+
+    <TimerInputDisplay />
   </div>
 </template>
+
 <script setup lang="ts">
-import { useTimer } from '../../composables/useTimer/useTimer.ts'
-import TimerActions from './TimerActions.vue'
-import TimerDisplay from './TimerDisplay.vue'
-
-const { start, stop, reset, formattedTime, set, status, minutes, seconds, isUnderMaxTime } =
-  useTimer()
-
-const handleStart = () => {
-  set(minutes.value, seconds.value)
-  start()
-}
-
-const handleResume = () => {
-  start()
-}
+import TimerInputDisplay from './TimerInputDisplay.vue'
 </script>
 
 <style scoped>
