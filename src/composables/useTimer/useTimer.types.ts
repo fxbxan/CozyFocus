@@ -1,11 +1,12 @@
-import type { Ref } from 'vue'
+import type { Ref, WritableComputedRef } from 'vue'
 
 export interface ITimerContext {
   readonly status: Ref<ETimerStatus>
-  readonly seconds: Ref<number>
-  set: (s: number) => void
+  seconds: WritableComputedRef<number>
   start: () => void
   stop: () => void
+  displayMinutes: WritableComputedRef<number>
+  displaySeconds: WritableComputedRef<number>
 }
 
 export enum ETimerStatus {
