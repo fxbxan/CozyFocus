@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import { useTimer } from '@/composables/useTimer/useTimer'
+import { useCountdown } from '@/composables/useCountdown/useCountdown'
 import TimerActions from './TimerActions.vue'
 
-const { start, stop, status, seconds, displayMinutes, displaySeconds } = useTimer()
+const { start, stop, status, seconds, displayMinutes, displaySeconds } = useCountdown()
 </script>

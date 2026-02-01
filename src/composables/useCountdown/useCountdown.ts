@@ -1,10 +1,10 @@
 import { computed, onUnmounted, ref } from 'vue'
-import { type ITimerContext, ETimerStatus } from './useTimer.types'
-import { INTERVAL_MS } from './useTimer.consts'
-import { MINUTE } from './useTimer.consts'
+import { type ITimerContext, ETimerStatus } from './useCountdown.types'
+import { INTERVAL_MS } from './useCountdown.consts'
+import { MINUTE } from './useCountdown.consts'
 //!TODO Interval is not recommended since it can cause time drift, need other implementation
 
-export function useTimer(): ITimerContext {
+export function useCountdown(): ITimerContext {
   const remaining = ref<number>(0)
   const status = ref<ETimerStatus>(ETimerStatus.STOP)
   const timerIntervalId = ref<ReturnType<typeof setInterval> | null>(null)
