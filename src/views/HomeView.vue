@@ -3,9 +3,7 @@ import TimerContainer from '../components/Timer/TimerContainer.vue'
 </script>
 
 <template>
-  <section>
-    <!-- <Greeter />  -->
-  </section>
+  <section></section>
   <main>
     <TimerContainer />
   </main>
