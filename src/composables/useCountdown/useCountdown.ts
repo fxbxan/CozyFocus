@@ -6,7 +6,7 @@ import { INTERVAL_MS, MINUTE } from './useCountdown.consts'
 
 export function useCountdown(): ITimerContext {
   const remainingSeconds = ref<number>(0)
-  const status = ref<ETimerStatus>(ETimerStatus.STOP)
+  const status = ref<ETimerStatus>(ETimerStatus.IDLE)
   const timerIntervalId = ref<ReturnType<typeof setInterval> | null>(null)
 
   const tick = () => {
@@ -40,6 +40,9 @@ export function useCountdown(): ITimerContext {
   const minutes = computed({
     get: () => Math.floor(remainingSeconds.value / MINUTE),
     set: (val) => {
+      if (status.value !== ETimerStatus.RUNNING) {
+        status.value = ETimerStatus.IDLE
+      }
       remainingSeconds.value = val * MINUTE + (remainingSeconds.value % MINUTE)
     },
   })
@@ -47,6 +50,9 @@ export function useCountdown(): ITimerContext {
   const seconds = computed({
     get: () => remainingSeconds.value % MINUTE,
     set: (val) => {
+      if (status.value !== ETimerStatus.RUNNING) {
+        status.value = ETimerStatus.IDLE
+      }
       remainingSeconds.value = Math.floor(remainingSeconds.value / MINUTE) * MINUTE + val
     },
   })
