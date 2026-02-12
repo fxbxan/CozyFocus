@@ -1,23 +1,22 @@
 <template>
   <svg viewBox="0 0 10 10" class="base-circle-svg">
-    <circle
-      :cx="options.cx"
-      :cy="options.cy"
-      :r="options.r"
-      :fill="options.fill"
-      :stroke="options.stroke"
-      :stroke-width="options.strokeWidth"
-      :stroke-dasharray="options.strokeDashArray"
-    />
+    <circle :cx="cx" :cy="cy" :r="r" :style="circleStyle" />
   </svg>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { ICircleOptions } from './BaseCircle.types'
 
-defineProps<{
-  options: ICircleOptions
-}>()
+const props = defineProps<ICircleOptions>()
+
+const circleStyle = computed(() => ({
+  fill: props.fill,
+  stroke: props.stroke,
+  strokeWidth: props.strokeWidth,
+  strokeDasharray: props.strokeDashArray,
+  strokeDashoffset: props.strokeDashOffset,
+}))
 </script>
 
 <style scoped>

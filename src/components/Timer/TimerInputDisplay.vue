@@ -3,15 +3,12 @@
     <p>Status: {{ status }}</p>
     <p>Remaining: {{ remainingSeconds }}s</p>
 
-    <BaseCircle
-      :options="circleOptions"
-      style="transform: rotate(-90deg); transform-origin: center;"
-    />
+    <BaseCircle v-bind="circleOptions" />
 
-    <input type="number" :disabled="isInputDisabled" v-model.number="minutes" placeholder="MM" />
-    <input type="number" :disabled="isInputDisabled" v-model.number="seconds" placeholder="SS" />
+    <input type="number" :disabled="isInputDisabled" v-model.number="minutes" />
+    <input type="number" :disabled="isInputDisabled" v-model.number="seconds" />
 
-    <TimerActions @onStart="handleStart" @onStop="stop" />
+    <TimerActions @onStart="startCountdown" @onStop="stop" />
   </div>
 </template>
 
@@ -22,21 +19,19 @@ import TimerActions from './TimerActions.vue'
 import { ETimerStatus } from '@/composables/useCountdown/useCountdown.types'
 import BaseCircle from '../BaseCircle/BaseCircle.vue'
 import type { ICircleOptions } from '../BaseCircle/BaseCircle.types'
+import { getCircumference } from '@/utils/geometry'
+import { timeToSeconds } from '@/utils/time'
 
 const { start, stop, status, minutes, seconds, remainingSeconds } = useCountdown()
 
-
 const radius = 4
-const circumference = 2 * Math.PI * radius
 
 const totalDuration = ref(0)
 
-const handleStart = () => {
-  totalDuration.value = (minutes.value * 60) + seconds.value
+const startCountdown = () => {
+  totalDuration.value = timeToSeconds(minutes.value, seconds.value)
 
-  if (totalDuration.value > 0) {
-    start()
-  }
+  if (totalDuration.value >= 0) start()
 }
 
 const circleOptions = computed<ICircleOptions>(() => {
@@ -52,21 +47,20 @@ const circleOptions = computed<ICircleOptions>(() => {
   if (status.value === ETimerStatus.IDLE) {
     return {
       ...base,
-      strokeDashArray: `${circumference} ${circumference}`
+      strokeDashArray: `${getCircumference(radius)} ${getCircumference(radius)}`,
     }
   }
 
-
   if (totalDuration.value === 0) {
-    return { ...base, strokeDashArray: `0 ${circumference}` }
+    return { ...base, strokeDashArray: `0 ${getCircumference(radius)}` }
   }
 
   const percentage = remainingSeconds.value / totalDuration.value
-  const drawLength = circumference * percentage
+  const drawLength = getCircumference(radius) * percentage
 
   return {
     ...base,
-    strokeDashArray: `${drawLength} ${circumference}`
+    strokeDashArray: `${drawLength} ${getCircumference(radius)}`,
   }
 })
 
