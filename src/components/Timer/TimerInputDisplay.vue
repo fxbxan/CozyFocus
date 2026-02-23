@@ -3,7 +3,7 @@
     <p>Status: {{ status }}</p>
     <p>Remaining: {{ remainingSeconds }}s</p>
 
-    <BaseCircle v-bind="circleOptions" />
+    <BaseCircle v-bind="circleOptions" class="progress-ring" />
 
     <input type="number" :disabled="isInputDisabled" v-model.number="minutes" />
     <input type="number" :disabled="isInputDisabled" v-model.number="seconds" />
@@ -72,5 +72,9 @@ const isInputDisabled = computed(() => status.value === ETimerStatus.RUNNING)
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.progress-ring {
+  transform: rotate(90deg) scaleX(-1);
 }
 </style>
