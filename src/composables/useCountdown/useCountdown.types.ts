@@ -12,4 +12,5 @@ export interface ITimerContext {
 export enum ETimerStatus {
   RUNNING = 'Running',
   STOP = 'Stop',
+  IDLE = 'Idle'
 }
