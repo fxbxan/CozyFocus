@@ -7,5 +7,5 @@ export interface ICircleOptions {
   strokeWidth?: number
   strokeDashArray?: number | string
   strokeDashOffset?: string
+  transition?: string
 }
-

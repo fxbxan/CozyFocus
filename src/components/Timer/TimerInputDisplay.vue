@@ -34,40 +34,28 @@ const startCountdown = () => {
   if (totalDuration.value >= 0) start()
 }
 
+const circumreference = getCircumference(radius)
+
 const circleOptions = computed<ICircleOptions>(() => {
-  const base = {
+  const percentage = remainingSeconds.value / totalDuration.value
+  const drawLength = circumreference * percentage
+
+  return {
     r: radius,
     cx: '50%',
     cy: '50%',
     fill: 'white',
     stroke: 'red',
     strokeWidth: 0.2,
-  }
-
-  if (status.value === ETimerStatus.IDLE) {
-    return {
-      ...base,
-      strokeDashArray: `${getCircumference(radius)} ${getCircumference(radius)}`,
-    }
-  }
-
-  if (totalDuration.value === 0) {
-    return { ...base, strokeDashArray: `0 ${getCircumference(radius)}` }
-  }
-
-  const percentage = remainingSeconds.value / totalDuration.value
-  const drawLength = getCircumference(radius) * percentage
-
-  return {
-    ...base,
-    strokeDashArray: `${drawLength} ${getCircumference(radius)}`,
+    transition: 'stroke-dasharray 0.3s ease-in-out',
+    strokeDashArray: `${drawLength} ${circumreference}`,
   }
 })
 
 const isInputDisabled = computed(() => status.value === ETimerStatus.RUNNING)
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .timer-container {
   display: flex;
   flex-direction: column;

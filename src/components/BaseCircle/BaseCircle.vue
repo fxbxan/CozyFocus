@@ -16,6 +16,7 @@ const circleStyle = computed(() => ({
   strokeWidth: props.strokeWidth,
   strokeDasharray: props.strokeDashArray,
   strokeDashoffset: props.strokeDashOffset,
+  transition: props.transition,
 }))
 </script>
 
