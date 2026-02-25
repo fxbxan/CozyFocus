@@ -8,6 +8,7 @@ export function useCountdown(): ITimerContext {
   const remainingSeconds = ref<number>(0)
   const status = ref<ETimerStatus>(ETimerStatus.IDLE)
   const timerIntervalId = ref<ReturnType<typeof setInterval> | null>(null)
+  const totalDuration = ref(0)
 
   const tick = () => {
     remainingSeconds.value -= 1
@@ -24,6 +25,8 @@ export function useCountdown(): ITimerContext {
     if (status.value === ETimerStatus.RUNNING || remainingSeconds.value <= 0) return
 
     status.value = ETimerStatus.RUNNING
+
+    totalDuration.value = remainingSeconds.value
 
     timerIntervalId.value = setInterval(() => {
       tick()
@@ -66,5 +69,6 @@ export function useCountdown(): ITimerContext {
     remainingSeconds,
     minutes,
     seconds,
+    totalDuration,
   }
 }
