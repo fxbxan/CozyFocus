@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import TimerContainer from '../components/Timer/TimerContainer.vue'
+import TimerProvider from '@/components/Timer/TimerProvider.vue'
 </script>
 
 <template>
   <section></section>
   <main>
-    <TimerContainer />
+    <TimerProvider />
   </main>
 </template>
 
-<style scoped>
-/* main {
-  display: grid;
-} */
-</style>
+<style scoped></style>
